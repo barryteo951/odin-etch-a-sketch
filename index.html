@@ -1,0 +1,144 @@
+<!-- REQUIREMENTS 
+1. [OK] Follow our instructions on setting up your project’s GitHub repository                                    3.     r    -s -               .
+
+2. Create a webpage with a 16x16 grid of square divs.
+    [OK] - Create the divs using JavaScript. Don’t try to create them by hand by copying and pasting them in your HTML file!
+    [OK] - It’s best to put your grid squares inside a “container” div. This div can be written in your HTML file.
+    [OK]- Use Flexbox to make the divs appear as a grid (versus just one on each line). 
+
+3. [OK] Set up a “hover” effect so that the grid divs change color when your mouse passes over them, leaving a (pixelated) trail through your grid like a pen would.
+
+4. [TBC] Add a button on the top of the screen that will send the user a popup asking for the number of squares per side for the new grid. Once entered, the existing grid should be removed, and a new grid should be generated in the same total space as before (e.g., 960px wide) so that you’ve got a new sketch pad.
+    [OK] - Research button tags in HTML and how you can make a JavaScript function run when one is clicked.
+    [OK] - Also check out prompts.
+    [OK] - You should be able to enter 64 and have a brand new 64x64 grid pop up without changing the total amount of pixels used.
+
+5. Push your project to GitHub!
+
+Extra credit
+Transform the behavior of a square when interacting with the mouse by introducing a series of modifications.
+
+1. Rather than squares being the same color throughout the grid, randomize the squares’ RGB values with each interaction.
+
+2. Additionally, implement a progressive darkening effect where each interaction darkens the square by 10%. The goal is to achieve a fully black (or completely colored) square in only ten interactions.
+Hint: The opacity CSS property is useful here. To learn how to use it, check this MDN docs article about the opacity CSS property.
+You can choose to do either one or both of these challenges, it’s up to you.
+-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                align-items: center;
+                justify-content: center;
+                gap: 50px;
+            }
+
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;;
+                align-items: center;
+
+                border-style: solid;
+                border-color: red;
+                width: 960px;
+                height: 960px;
+            }
+
+            .grid {
+                border-style: solid;
+                border-color: cyan;
+            }
+
+            button {
+                width: 960px;
+                height: 100px;
+                font-size: 36px;
+            }
+
+
+        </style>
+    </head>
+    
+    <body>
+        <button>START GAME</button>
+        <div class=container></div>
+
+
+
+        <script>
+            const container = document.querySelector(".container");
+            createGrid(4, container);
+            hover();
+
+
+
+            const button = document.querySelector("button");
+            button.addEventListener("click", event => {
+                let gridsPerSide = prompt("Enter number of squares per side for the new grid :");
+                if (gridsPerSide > 100) {
+                    alert("Invalid input, the maximum number of squares per side is 100");
+                    return;
+                }
+
+                removeGrid(container);
+
+                createGrid(gridsPerSide, container);
+               
+                hover();
+            });
+
+
+
+            function createGrid (gridsPerSide, container) {
+                let temp = 0;
+                for (let count1=1; count1<=gridsPerSide; count1++) {
+                    for (let count2=1; count2<=gridsPerSide; count2++) {
+                        const grid = document.createElement("div");
+                        grid.classList.add("grid");
+                        
+                        let containerWidth = parseInt(window.getComputedStyle(container).width);
+                        let totalBorderWidth = 2 + 2;
+                        let safetyLimit = 0.95; // to prevent the overflow of grid elements out of container
+                        grid.style.width = (containerWidth / gridsPerSide - totalBorderWidth) * safetyLimit + "px"; 
+                        grid.style.height = grid.style.width;
+                        
+                        container.appendChild(grid);
+                    }
+                }
+                console.log("Grid created " + gridsPerSide + "x" + gridsPerSide);  
+            }
+            
+
+
+            function removeGrid (container) {
+                while (container.childElementCount > 0 ) {
+                    grid = document.querySelector(".grid");
+                    container.removeChild(grid);
+                }
+            }
+
+
+
+            function hover () {
+                const grids = document.querySelectorAll(".grid");
+                grids.forEach((grid) => {
+                    grid.addEventListener("mouseover", event => {
+                        grid.style.background = "cyan";
+                    });
+                });
+            }
+        </script>
+    </body>
+</html>
+
